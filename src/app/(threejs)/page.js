@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState, useEffect, useRef } from "react";
+import { Suspense, useState } from "react";
 import Planets from "@/models/Planets";
 import Loader from "@/components/Loader";
 import Background from "@/models/Background";
@@ -12,44 +12,39 @@ import AmbientShip from "@/models/AmbientShip";
 export default function Home() {
   const [isRotating, setIsRotating] = useState(false);
   const [currentStage, setCurrentStage] = useState(0);
-  let planetScale
-  let planetPos
-  let planetRotation
-  let screenPos
-  let screenScale
 
-  useEffect(() => {
 
-    const adjustPlanetsForScreenSize = () => {
-      let screenScale = null;
-      let screenPos = [-45, -8.5, -165];
+  const adjustPlanetsForScreenSize = () => {
+    let screenScale = null;
+    let screenPos = [-45, -8.5, -165];
     let rotation = [0.1, -0.5, 0];
-    
-    if (window.innerWidth < 768) {
+    if (window) {
+
+      if (window.innerWidth < 768) {
         screenScale = [0.9, 0.9, 0.9];
       } else {
         screenScale = [1, 1, 1];
       }
       return [screenScale, screenPos, rotation]
+    }
   }
   const adjustShipForScreenSize = () => {
     let screenScale, screenPos
+    if (window) {
 
-    if (window.innerWidth < 768) {
-      screenScale = [0.09, 0.09, 0.09];
-      screenPos = [-15, 8, -18]
-    } else {
-      screenScale = [0.15, 0.15, 0.15];
-      screenPos = [-10, 6, -15]
+      if (window.innerWidth < 768) {
+        screenScale = [0.09, 0.09, 0.09];
+        screenPos = [-15, 8, -18]
+      } else {
+        screenScale = [0.15, 0.15, 0.15];
+        screenPos = [-10, 6, -15]
+      }
     }
     return [screenScale, screenPos]
   }
-  
- 
-   [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
- 
-   [shipScale, shipPos] = adjustShipForScreenSize();
-}, [])
+
+  const [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
+  const [shipScale, shipPos] = adjustShipForScreenSize();
 
 
 
