@@ -22,11 +22,11 @@ export default function Home() {
 
       if (window.innerWidth < 768) {
         screenScale = [0.9, 0.9, 0.9];
-      } else {
-        screenScale = [1, 1, 1];
       }
-      return [screenScale, screenPos, rotation]
+    } else {
+      screenScale = [1, 1, 1];
     }
+      return [screenScale, screenPos, rotation]
   }
   const adjustShipForScreenSize = () => {
     let screenScale, screenPos
@@ -35,10 +35,10 @@ export default function Home() {
       if (window.innerWidth < 768) {
         screenScale = [0.09, 0.09, 0.09];
         screenPos = [-15, 8, -18]
-      } else {
-        screenScale = [0.15, 0.15, 0.15];
-        screenPos = [-10, 6, -15]
       }
+    } else {
+      screenScale = [0.15, 0.15, 0.15];
+      screenPos = [-10, 6, -15]
     }
     return [screenScale, screenPos]
   }
