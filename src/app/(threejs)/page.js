@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Planets from "@/models/Planets";
 import Loader from "@/components/Loader";
 import Background from "@/models/Background";
@@ -43,9 +43,12 @@ export default function Home() {
     return [screenScale, screenPos]
   }
 
-  const [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
-  const [shipScale, shipPos] = adjustShipForScreenSize();
+  useEffect(() => {
 
+    const [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
+    const [shipScale, shipPos] = adjustShipForScreenSize();
+    
+  }, [])
 
 
   return (
