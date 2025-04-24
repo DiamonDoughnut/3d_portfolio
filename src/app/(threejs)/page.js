@@ -12,19 +12,25 @@ import AmbientShip from "@/models/AmbientShip";
 export default function Home() {
   const [isRotating, setIsRotating] = useState(false);
   const [currentStage, setCurrentStage] = useState(0);
+  let planetScale
+  let planetPos
+  let planetRotation
+  let screenPos
+  let screenScale
 
+  useEffect(() => {
 
-  const adjustPlanetsForScreenSize = () => {
-    let screenScale = null;
-    let screenPos = [-45, -8.5, -165];
+    const adjustPlanetsForScreenSize = () => {
+      let screenScale = null;
+      let screenPos = [-45, -8.5, -165];
     let rotation = [0.1, -0.5, 0];
-
+    
     if (window.innerWidth < 768) {
-      screenScale = [0.9, 0.9, 0.9];
-    } else {
-      screenScale = [1, 1, 1];
-    }
-    return [screenScale, screenPos, rotation]
+        screenScale = [0.9, 0.9, 0.9];
+      } else {
+        screenScale = [1, 1, 1];
+      }
+      return [screenScale, screenPos, rotation]
   }
   const adjustShipForScreenSize = () => {
     let screenScale, screenPos
@@ -38,9 +44,12 @@ export default function Home() {
     }
     return [screenScale, screenPos]
   }
-
-  const [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
-  const [shipScale, shipPos] = adjustShipForScreenSize();
+  
+ 
+   [planetScale, planetPos, planetRotation] = adjustPlanetsForScreenSize();
+ 
+   [shipScale, shipPos] = adjustShipForScreenSize();
+}, [])
 
 
 
