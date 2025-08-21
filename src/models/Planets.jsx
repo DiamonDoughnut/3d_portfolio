@@ -95,36 +95,67 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
   }
 
-
-  const handleTouchEnd = (e) => {
-    console.log('TOUCH END - stopping rotation');
-    isRotating = false;
-    
-    if (frameRef.current) {
-      cancelAnimationFrame(frameRef.current);
-      frameRef.current = null;
-    }
-  };
-
   useEffect(() => {
     const canvas = gl.domElement;
-    canvas.addEventListener('pointerup', handlePointerUp);
-    canvas.addEventListener('pointerdown', handlePointerDown);
-    canvas.addEventListener('pointermove', handlePointerMove);
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-    canvas.addEventListener('touchend', handleTouchEnd);
+    const isMobile = 'ontouchstart' in window;
 
-    return () => {
-        canvas.removeEventListener('pointerup', handlePointerUp)
-        canvas.removeEventListener('pointerdown', handlePointerDown)
-        canvas.removeEventListener('pointermove', handlePointerMove)
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
+    if (isMobile) {
+      // Mobile: Use touch events with explicit passive: false
+      const handleTouchStart = (e) => {
+        console.log('TOUCH START');
+        isRotating = true;
+        lastX.current = e.touches[0].clientX;
+      };
+    
+      const handleTouchMove = (e) => {
+        e.preventDefault(); // This requires passive: false
+        if (!isRotating) return;
+      
+        console.log('TOUCH MOVE event fired');
+      
+        const clientX = e.touches[0].clientX;
+        const delta = (clientX - lastX.current) / viewport.width;
+      
+        if (planetsRef.current) {
+          planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+        }
+      
+        lastX.current = clientX;
+      };
+    
+      const handleTouchEnd = (e) => {
+        console.log('TOUCH END');
+        isRotating = false;
+      };
+    
+      // Critical: { passive: false } allows preventDefault and more events
+      canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+      canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    
+      return () => {
+        canvas.removeEventListener('touchstart', handleTouchStart);
+        canvas.removeEventListener('touchmove', handleTouchMove);
         canvas.removeEventListener('touchend', handleTouchEnd);
+        canvas.removeEventListener('touchcancel', handleTouchEnd);
+      };
+    } else {
+      canvas.addEventListener('pointerup', handlePointerUp);
+      canvas.addEventListener('pointerdown', handlePointerDown);
+      canvas.addEventListener('pointermove', handlePointerMove);
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('keyup', handleKeyUp);
+      return () => {
+          canvas.removeEventListener('pointerup', handlePointerUp)
+          canvas.removeEventListener('pointerdown', handlePointerDown)
+          canvas.removeEventListener('pointermove', handlePointerMove)
+          document.removeEventListener('keydown', handleKeyDown);
+          document.removeEventListener('keyup', handleKeyUp);
+      }
     }
 
-  }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, handleTouchEnd, gl])
+  }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
 
   useFrame(() => {
     if(!isRotating) {
