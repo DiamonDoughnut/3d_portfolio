@@ -21,9 +21,8 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     
     setIsRotating(true);
 
-    
-
     if (e.pointerType === 'touch') {
+      e.preventDefault()
       e.target.setPointerCapture(e.pointerId);
     }
 
