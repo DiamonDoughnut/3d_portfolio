@@ -14,11 +14,12 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const lastX = useRef(0);
   const rotationSpeed = useRef(0);
   const dampingFactor = 0.95;
+  const lastPointerMoveTime = useRef();
 
   const { nodes, materials } = useGLTF('/planets2.glb');
   
   const handlePointerDown = (e) => {
-    
+    lastPointerMoveTime.current = Date.now();
     setIsRotating(true);
 
     if (e.pointerType === 'touch') {
@@ -43,10 +44,21 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
     
   }  
-  const debugPointerUp = (e, eventType) => {
-    handlePointerUp(e);
-    console.log("Stopping motion due to event: " + eventType);
+
+  const handlePointerCancel = (e) => {
+    const timeSinceLastMove = Date.now() - lastPointerMoveTime.current;
+
+    if (timeSinceLastMove > 100) {
+      console.log("cancelling pointer - time since last logged touch: " + timeSinceLastMove + " ms");
+      setIsRotating(false)
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    } else {
+      console.log("pointercancel event ignored: movement detected");
+    }
   }
+  
   const handlePointerMove = useCallback((e) => {
     if (e.pointerType === "touch"){
         e.preventDefault();
@@ -88,14 +100,14 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
 
   useEffect(() => {
     const canvas = gl.domElement;
-    canvas.addEventListener('pointerup', (e) => debugPointerUp(e, 'pointerup'));
+    canvas.addEventListener('pointerup', handlePointerUp);
     canvas.addEventListener('pointerdown', handlePointerDown);
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
     return () => {
-        canvas.removeEventListener('pointerup', (e) => debugPointerUp(e, 'pointerup'))
+        canvas.removeEventListener('pointerup', handlePointerUp)
         canvas.removeEventListener('pointerdown', handlePointerDown)
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
