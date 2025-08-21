@@ -172,29 +172,44 @@ const smoothingBuffer = useRef([]);
     console.error('Error in handleTouchMove:', error);
     console.error('Error stack:', error.stack);
   }
-}, []);
+}, []);useEffect(() => {
+  const canvas = gl.domElement;
+  
+  if ('ontouchstart' in window) {
+    // MINIMAL touch events
+    const handleTouchStart = (e) => {
+      isRotating = true;
+      lastX.current = e.touches[0].clientX;
+    };
     
-      const handleTouchEnd = (e) => {
-        isRotating = false;
-  if (momentumInterval.current) {
-    clearInterval(momentumInterval.current);
-  }
-  smoothingBuffer.current = [];
-  touchVelocity.current = 0;
-      };
+    const handleTouchMove = (e) => {
+      e.preventDefault();
+      if (!isRotating) return;
+      
+      const clientX = e.touches[0].clientX;
+      const delta = (clientX - lastX.current) / viewport.width;
+      
+      if (planetsRef.current) {
+        planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+      }
+      
+      lastX.current = clientX;
+    };
     
-      // Critical: { passive: false } allows preventDefault and more events
-      canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-      canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-      canvas.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+    const handleTouchEnd = () => {
+      isRotating = false;
+    };
     
-      return () => {
-        canvas.removeEventListener('touchstart', handleTouchStart);
-        canvas.removeEventListener('touchmove', handleTouchMove);
-        canvas.removeEventListener('touchend', handleTouchEnd);
-        canvas.removeEventListener('touchcancel', handleTouchEnd);
-      };
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd);
+    
+    return () => {
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+    };
+
     } else {
       canvas.addEventListener('pointerup', handlePointerUp);
       canvas.addEventListener('pointerdown', handlePointerDown);
