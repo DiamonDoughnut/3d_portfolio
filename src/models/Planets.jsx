@@ -51,6 +51,11 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
       console.log("pointercancel event ignored: movement detected");
     }
   }
+
+  const handleWindowPointerUp = (e) => {
+    console.log("POINTER UP WINDOW");
+    isRotating = false;
+  }
   
   const handlePointerMove = useCallback((e) => {
     console.log('Pointer move fired - type:', e.pointerType);
@@ -117,6 +122,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('pointerup', handleWindowPointerUp);
 
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
@@ -125,6 +131,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
+        window.removeEventListener('pointerup', handleWindowPointerUp);
     }
 
   }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
