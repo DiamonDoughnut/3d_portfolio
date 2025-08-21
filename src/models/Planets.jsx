@@ -43,7 +43,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
     
   }  
-  const debugPointerUp = (e, eventType) {
+  const debugPointerUp = (e, eventType) => {
     handlePointerUp(e);
     console.log("Stopping motion due to event: " + eventType);
   }
