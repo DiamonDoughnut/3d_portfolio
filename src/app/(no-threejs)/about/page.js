@@ -9,7 +9,7 @@ import CTA from '../../../components/CTA'
 
 const About = () => {
   return (
-    <section className='w-[75%] flex flex-col mx-auto h-full mt-24 px-20 text-slate-200'>
+    <section className='w-[75%] flex flex-col mx-auto h-full mt-24 md:px-20 text-slate-200'>
       <h1 className='text-2xl font-bold'>
         Hello! I'm <span className='text-transparent bg-clip-text bg-gradient-to-r drop-shadow-sm drop-shadow-slate-300 from-blue-500 to-blue-700'>Caleb!</span> <span className="text-base font-normal text-slate-400"> <br/> (also known as <span className="text-transparent font-semibold bg-clip-text bg-gradient-to-l drop-shadow-xs drop-shadow-slate-300 from-indigo-500 to-indigo-700">DiamonDoughnut</span>)</span>
       </h1>
