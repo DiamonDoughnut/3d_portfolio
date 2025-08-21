@@ -59,27 +59,43 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
   }
   
-    const handlePointerMove = useCallback((e) => {
-  console.log('Pointer move fired - type:', e.pointerType);
-  
-  if (!isRotating) {
-    console.log('Not rotating, returning');
-    return;
-  }
+  const handlePointerMove = useCallback((e) => {
+    console.log('Pointer move fired - type:', e.pointerType);
+    if (e.pointerType === 'touch') {
+      e.preventDefault();
+    
+      if (!isRotating) return;
+    
+      const clientX = e.clientX;
+      const delta = (clientX - lastX.current) / viewport.width;
+    
+      if (planetsRef.current) {
+        planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+      }
+    
+      lastX.current = clientX;
+      rotationSpeed.current = delta * 0.01 * Math.PI;
+    
+    } else {
+      if (!isRotating) {
+        console.log('Not rotating, returning');
+        return;
+      }
   
   // Remove ALL optimizations temporarily
-  const clientX = e.clientX;
-  const delta = (clientX - lastX.current) / viewport.width;
+      const clientX = e.clientX;
+      const delta = (clientX - lastX.current) / viewport.width;
   
-  console.log('Applying rotation - delta:', delta);
+      console.log('Applying rotation - delta:', delta);
   
-  if (planetsRef.current) {
-    planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
-    console.log('New rotation.y:', planetsRef.current.rotation.y);
-  }
+      if (planetsRef.current) {
+        planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+        console.log('New rotation.y:', planetsRef.current.rotation.y);
+      }
   
-  lastX.current = clientX;
-}, [isRotating, viewport.width]);
+      lastX.current = clientX;
+    }
+  }, [isRotating, viewport.width]);
     /** Testing several bug cases - reverting optimizations to find issue, uncomment when fixed
     if (e.pointerType === "touch"){
         e.preventDefault();
