@@ -15,6 +15,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const rotationSpeed = useRef(0);
   const dampingFactor = 0.95;
   const lastPointerMoveTime = useRef();
+  
 
   const { nodes, materials } = useGLTF('/planets2.glb');
   
@@ -106,10 +107,24 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         isRotating = true;
         lastX.current = e.touches[0].clientX;
       };
+
+      let eventTimes = []
     
       const handleTouchMove = (e) => {
         e.preventDefault(); // This requires passive: false
         if (!isRotating) return;
+
+        eventTimes.push(Date.now());
+  
+  // Log timing every 10 events
+  if (eventTimes.length % 10 === 0) {
+    const intervals = eventTimes.slice(-10).map((time, i, arr) => 
+      i > 0 ? time - arr[i-1] : 0
+    ).slice(1);
+    
+    console.log('Touch event intervals (ms):', intervals);
+    console.log('Average interval:', intervals.reduce((a,b) => a+b) / intervals.length);
+  }
       
         console.log('TOUCH MOVE event fired');
       
