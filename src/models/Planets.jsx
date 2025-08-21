@@ -19,6 +19,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const { nodes, materials } = useGLTF('/planets2.glb');
   
   const handlePointerDown = (e) => {
+    console.log("POINTER DOWN");
     lastPointerMoveTime.current = Date.now();
     setIsRotating(true);
 
@@ -30,7 +31,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     lastX.current = clientX;
   }  
   const handlePointerUp = (e) => {
-    
+    console.log("POINTER UP");
     
     setIsRotating(false);
 
@@ -81,28 +82,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         console.log('Not rotating, returning');
         return;
       }
-  
-  // Remove ALL optimizations temporarily
-      const clientX = e.clientX;
-      const delta = (clientX - lastX.current) / viewport.width;
-  
-      console.log('Applying rotation - delta:', delta);
-  
-      if (planetsRef.current) {
-        planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
-        console.log('New rotation.y:', planetsRef.current.rotation.y);
-      }
-  
-      lastX.current = clientX;
-    }
-  }, [isRotating, viewport.width]);
-    /** Testing several bug cases - reverting optimizations to find issue, uncomment when fixed
-    if (e.pointerType === "touch"){
-        e.preventDefault();
-    }
-
-    if (!isRotating) return;
-    
+      
     if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
     }
@@ -115,7 +95,8 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         lastX.current = clientX;
         rotationSpeed.current = delta * 0.01 * Math.PI;
     });
-  }, [isRotating, viewport.width]); */
+  }, [isRotating, viewport.width]);
+    
 
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowLeft') {
