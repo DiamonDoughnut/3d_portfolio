@@ -60,6 +60,28 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   }
   
   const handlePointerMove = useCallback((e) => {
+    const handlePointerMove = useCallback((e) => {
+  console.log('Pointer move fired - type:', e.pointerType);
+  
+  if (!isRotating) {
+    console.log('Not rotating, returning');
+    return;
+  }
+  
+  // Remove ALL optimizations temporarily
+  const clientX = e.clientX;
+  const delta = (clientX - lastX.current) / viewport.width;
+  
+  console.log('Applying rotation - delta:', delta);
+  
+  if (planetsRef.current) {
+    planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+    console.log('New rotation.y:', planetsRef.current.rotation.y);
+  }
+  
+  lastX.current = clientX;
+}, [isRotating, viewport.width]);
+    /** Testing several bug cases - reverting optimizations to find issue, uncomment when fixed
     if (e.pointerType === "touch"){
         e.preventDefault();
     }
@@ -78,7 +100,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         lastX.current = clientX;
         rotationSpeed.current = delta * 0.01 * Math.PI;
     });
-  }, [isRotating, viewport.width]); 
+  }, [isRotating, viewport.width]); */
 
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowLeft') {
