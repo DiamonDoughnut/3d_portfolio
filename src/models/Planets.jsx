@@ -157,7 +157,6 @@ const smoothingBuffer = useRef([]);
   // Skip if events are coming too fast (< 8ms)
   if (timeDelta < 8) return;
   
-  const clientX = e.touches[0].clientX;
   const delta = (clientX - lastX.current) / viewport.width;
   const rotationDelta = delta * 0.01 * Math.PI;
   
