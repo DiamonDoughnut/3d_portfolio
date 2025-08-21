@@ -101,6 +101,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener('pointerup', handlePointerUp);
+    canvas.addEventListener('pointercancel', handlePointerCancel);
     canvas.addEventListener('pointerdown', handlePointerDown);
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
@@ -108,6 +109,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
 
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
+        canvas.removeEventListener('pointercancel', handlePointerCancel);
         canvas.removeEventListener('pointerdown', handlePointerDown)
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
