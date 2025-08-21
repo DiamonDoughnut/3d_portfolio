@@ -41,8 +41,12 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
       cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
     }
-    console.log("Stopping motion due to event: " + e)
+    
   }  
+  const debugPointerUp(e, eventType) = {
+    handlePointerUp(e);
+    console.log("Stopping motion due to event: " + eventType)
+  }
   const handlePointerMove = useCallback((e) => {
     if (e.pointerType === "touch"){
         e.preventDefault();
@@ -84,20 +88,20 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
 
   useEffect(() => {
     const canvas = gl.domElement;
-    canvas.addEventListener('pointerup', handlePointerUp);
+    canvas.addEventListener('pointerup', (e) => debugPointerUp(e, 'pointerup'));
     canvas.addEventListener('pointerdown', handlePointerDown);
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-    canvas.addEventListener('pointercancel', handlePointerUp);
+    canvas.addEventListener('pointercancel', (e) => debugPointerUp(e, 'pointercancel'));
 
     return () => {
-        canvas.removeEventListener('pointerup', handlePointerUp)
+        canvas.removeEventListener('pointerup', (e) => debugPointerUp(e, 'pointerup'))
         canvas.removeEventListener('pointerdown', handlePointerDown)
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
-        canvas.removeEventListener('pointercancel', handlePointerUp)
+        canvas.removeEventListener('pointercancel', (e) => debugPointerUp(e, 'pointercancel'))
     }
 
   }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
