@@ -15,6 +15,10 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const rotationSpeed = useRef(0);
   const dampingFactor = 0.95;
   const lastPointerMoveTime = useRef();
+  const lastTouchTime = useRef(0);
+const touchVelocity = useRef(0);
+const smoothingBuffer = useRef([]);
+  const momentumInterval = useRef();
   
 
   const { nodes, materials } = useGLTF('/planets2.glb');
@@ -103,9 +107,40 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     if (isMobile) {
       // Mobile: Use touch events with explicit passive: false
       const handleTouchStart = (e) => {
-        console.log('TOUCH START');
         isRotating = true;
-        lastX.current = e.touches[0].clientX;
+  lastX.current = e.touches[0].clientX;
+  lastTouchTime.current = Date.now();
+  smoothingBuffer.current = [];
+  touchVelocity.current = 0;
+  
+  // Clear any existing momentum
+  if (momentumInterval.current) {
+    clearInterval(momentumInterval.current);
+  }
+  
+  // Start momentum system
+  momentumInterval.current = setInterval(() => {
+    if (isRotating) {
+      const timeSinceLastTouch = Date.now() - lastTouchTime.current;
+      
+      // If no touch events for 50ms, apply momentum
+      if (timeSinceLastTouch > 50 && touchVelocity.current !== 0) {
+        console.log('Applying momentum - no touch events for', timeSinceLastTouch, 'ms');
+        
+        if (planetsRef.current) {
+          planetsRef.current.rotation.y += touchVelocity.current * 16; // 16ms worth
+        }
+        
+        // Decay momentum
+        touchVelocity.current *= 0.98;
+        
+        // Stop if momentum is too small
+        if (Math.abs(touchVelocity.current) < 0.0001) {
+          touchVelocity.current = 0;
+        }
+      }
+    }
+  }, 16); // 60fps momentum updates
       };
 
       let eventTimes = []
@@ -115,6 +150,42 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         if (!isRotating) return;
 
         eventTimes.push(Date.now());
+
+        const now = Date.now();
+  const timeDelta = now - lastTouchTime.current;
+  
+  // Skip if events are coming too fast (< 8ms)
+  if (timeDelta < 8) return;
+  
+  const clientX = e.touches[0].clientX;
+  const delta = (clientX - lastX.current) / viewport.width;
+  const rotationDelta = delta * 0.01 * Math.PI;
+  
+  // Add to smoothing buffer
+  smoothingBuffer.current.push({
+    delta: rotationDelta,
+    time: now
+  });
+  
+  // Keep only last 5 samples
+  if (smoothingBuffer.current.length > 5) {
+    smoothingBuffer.current.shift();
+  }
+  
+  // Calculate smoothed rotation
+  const avgDelta = smoothingBuffer.current.reduce((sum, sample) => sum + sample.delta, 0) / smoothingBuffer.current.length;
+  
+  if (planetsRef.current) {
+    planetsRef.current.rotation.y += avgDelta;
+  }
+  
+  // Store velocity for momentum
+  if (timeDelta > 0) {
+    touchVelocity.current = avgDelta / timeDelta;
+  }
+  
+  lastX.current = clientX;
+  lastTouchTime.current = now;
   
   // Log timing every 10 events
   if (eventTimes.length % 10 === 0) {
@@ -139,8 +210,12 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
       };
     
       const handleTouchEnd = (e) => {
-        console.log('TOUCH END');
         isRotating = false;
+  if (momentumInterval.current) {
+    clearInterval(momentumInterval.current);
+  }
+  smoothingBuffer.current = [];
+  touchVelocity.current = 0;
       };
     
       // Critical: { passive: false } allows preventDefault and more events
