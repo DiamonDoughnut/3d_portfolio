@@ -37,25 +37,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
     
   }  
-
-  const handlePointerCancel = (e) => {
-    const timeSinceLastMove = Date.now() - lastPointerMoveTime.current;
-
-    if (timeSinceLastMove > 100) {
-      console.log("cancelling pointer - time since last logged touch: " + timeSinceLastMove + " ms");
-      setIsRotating(false)
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
-    } else {
-      console.log("pointercancel event ignored: movement detected");
-    }
-  }
-
-  const handleWindowPointerUp = (e) => {
-    console.log("POINTER UP WINDOW");
-    isRotating = false;
-  }
   
   const handlePointerMove = useCallback((e) => {
     console.log('Pointer move fired - type:', e.pointerType);
@@ -114,42 +95,36 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
   }
 
-  const handleTouchCancel = (e) => {
-      console.log('TOUCH CANCEL - force stop');
-      isRotating = false;
-  }
 
   const handleTouchEnd = (e) => {
-      console.log('TOUCH END - force stop');
-      isRotating = false;
+    console.log('TOUCH END - stopping rotation');
+    isRotating = false;
+    
+    if (frameRef.current) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
     }
+  };
 
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener('pointerup', handlePointerUp);
-    canvas.addEventListener('pointercancel', handlePointerCancel);
     canvas.addEventListener('pointerdown', handlePointerDown);
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-    window.addEventListener('pointerup', handleWindowPointerUp);
-
     canvas.addEventListener('touchend', handleTouchEnd);
-    canvas.addEventListener('touchcancel', handleTouchCancel);
 
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
-        canvas.removeEventListener('pointercancel', handlePointerCancel);
         canvas.removeEventListener('pointerdown', handlePointerDown)
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
-        window.removeEventListener('pointerup', handleWindowPointerUp);
         canvas.removeEventListener('touchend', handleTouchEnd);
-        canvas.removeEventListener('touchcancel', handleTouchCancel);
     }
 
-  }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
+  }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, handleTouchEnd, gl])
 
   useFrame(() => {
     if(!isRotating) {
