@@ -30,10 +30,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     console.log("POINTER UP");
     
     setIsRotating(false);
-
-    if (e.pointerType === 'touch' && e.target.hasPointerCapture) {
-      e.target.releasePointerCapture(e.pointerId);
-    }
     
     if (frameRef.current) {
       cancelAnimationFrame(frameRef.current);
@@ -58,10 +54,10 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   
   const handlePointerMove = useCallback((e) => {
     console.log('Pointer move fired - type:', e.pointerType);
-    if (e.pointerType === 'touch') {
+      if (!isRotating) return;
+      if (e.pointerType === 'touch') {
       e.preventDefault();
     
-      if (!isRotating) return;
     
       const clientX = e.clientX;
       const delta = (clientX - lastX.current) / viewport.width;
