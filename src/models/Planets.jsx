@@ -145,68 +145,34 @@ const smoothingBuffer = useRef([]);
 
       let eventTimes = []
     
-      const handleTouchMove = (e) => {
-        e.preventDefault(); // This requires passive: false
-        if (!isRotating) return;
-
-        eventTimes.push(Date.now());
-
-        const now = Date.now();
-  const timeDelta = now - lastTouchTime.current;
-  
-  // Skip if events are coming too fast (< 8ms)
-  if (timeDelta < 8) return;
-  
-  const delta = (clientX - lastX.current) / viewport.width;
-  const rotationDelta = delta * 0.01 * Math.PI;
-  
-  // Add to smoothing buffer
-  smoothingBuffer.current.push({
-    delta: rotationDelta,
-    time: now
-  });
-  
-  // Keep only last 5 samples
-  if (smoothingBuffer.current.length > 5) {
-    smoothingBuffer.current.shift();
-  }
-  
-  // Calculate smoothed rotation
-  const avgDelta = smoothingBuffer.current.reduce((sum, sample) => sum + sample.delta, 0) / smoothingBuffer.current.length;
-  
-  if (planetsRef.current) {
-    planetsRef.current.rotation.y += avgDelta;
-  }
-  
-  // Store velocity for momentum
-  if (timeDelta > 0) {
-    touchVelocity.current = avgDelta / timeDelta;
-  }
-  
-  lastX.current = clientX;
-  lastTouchTime.current = now;
-  
-  // Log timing every 10 events
-  if (eventTimes.length % 10 === 0) {
-    const intervals = eventTimes.slice(-10).map((time, i, arr) => 
-      i > 0 ? time - arr[i-1] : 0
-    ).slice(1);
+      const handleTouchMove = useCallback((e) => {
+  try {
+    console.log('Touch move starting...');
     
-    console.log('Touch event intervals (ms):', intervals);
-    console.log('Average interval:', intervals.reduce((a,b) => a+b) / intervals.length);
+    e.preventDefault();
+    if (!isRotating) return;
+    
+    console.log('About to access clientX...');
+    const clientX = e.touches[0].clientX;
+    console.log('clientX:', clientX);
+    
+    console.log('About to access lastX.current...');
+    const delta = (clientX - lastX.current) / (viewport?.width || window.innerWidth);
+    console.log('delta:', delta);
+    
+    console.log('About to access planetsRef.current...');
+    if (planetsRef.current) {
+      planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+    }
+    
+    lastX.current = clientX;
+    console.log('Touch move completed successfully');
+    
+  } catch (error) {
+    console.error('Error in handleTouchMove:', error);
+    console.error('Error stack:', error.stack);
   }
-      
-        console.log('TOUCH MOVE event fired');
-      
-        const clientX = e.touches[0].clientX;
-        const timingDelta = (clientX - lastX.current) / viewport.width;
-      
-        if (planetsRef.current) {
-          planetsRef.current.rotation.y += timingDelta * 0.01 * Math.PI;
-        }
-      
-        lastX.current = clientX;
-      };
+}, []);
     
       const handleTouchEnd = (e) => {
         isRotating = false;
