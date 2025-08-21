@@ -52,7 +52,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
 
     frameRef.current = requestAnimationFrame(() => {
         const clientX = e.clientX;
-        const delta = (client - lastX.current) / viewport.width;
+        const delta = (clientX - lastX.current) / viewport.width;
         
         planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
         lastX.current = clientX;
