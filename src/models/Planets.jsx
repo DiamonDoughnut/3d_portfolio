@@ -8,6 +8,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { a } from "@react-spring/three";
 
 const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
+  const frameRef = useRef();
   const planetsRef = useRef();
   const { gl, viewport} = useThree();
   const lastX = useRef(0);
