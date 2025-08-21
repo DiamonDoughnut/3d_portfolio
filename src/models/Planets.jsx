@@ -18,9 +18,10 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   const { nodes, materials } = useGLTF('/planets2.glb');
   
   const handlePointerDown = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    
     setIsRotating(true);
+
+    
 
     if (e.pointerType === 'touch') {
       e.target.setPointerCapture(e.pointerId);
@@ -30,10 +31,14 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     lastX.current = clientX;
   }  
   const handlePointerUp = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    
     document.body.style.touchAction = 'auto';
     setIsRotating(false);
+
+    if (e.pointerType === 'touch' && e.target.hasPointerCapture) {
+      e.target.releasePointerCapture(e.pointerId);
+    }
+    
     if (frameRef.current) {
       cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
@@ -85,6 +90,8 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     canvas.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+    canvas.addEventListener('pointercancel', handlePointerUp);
+    canvas.addEventListener('pointerleave', handlePointerUp);
 
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
@@ -92,6 +99,8 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         canvas.removeEventListener('pointermove', handlePointerMove)
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
+        canvas.removeEventListener('pointercancel', handlePointerUp)
+        canvas.removeEventListener('pointerleave', handlePointerUp)
     }
 
   }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
