@@ -59,7 +59,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
   }
   
-  const handlePointerMove = useCallback((e) => {
     const handlePointerMove = useCallback((e) => {
   console.log('Pointer move fired - type:', e.pointerType);
   
