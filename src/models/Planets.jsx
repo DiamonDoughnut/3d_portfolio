@@ -45,7 +45,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   }  
   const debugPointerUp(e, eventType) = {
     handlePointerUp(e);
-    console.log("Stopping motion due to event: " + eventType)
+    console.log("Stopping motion due to event: " + eventType);
   }
   const handlePointerMove = useCallback((e) => {
     if (e.pointerType === "touch"){
