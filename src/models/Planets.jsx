@@ -31,7 +31,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
   }  
   const handlePointerUp = (e) => {
     
-    document.body.style.touchAction = 'auto';
+    
     setIsRotating(false);
 
     if (e.pointerType === 'touch' && e.target.hasPointerCapture) {
