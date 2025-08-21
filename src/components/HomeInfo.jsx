@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 const InfoBox = ({text, link, btnText}) => (
-    <div className='w-full md:w-[50%] bg-blue-500 text-white rounded-2xl flex justify-center flex-col drop-shadow-blue-700 drop-shadow-2xl pt-4 px-8 mx-5 items-center'>
+    <div className='w-full md:w-[50%] bg-blue-500 text-white rounded-2xl flex justify-center flex-col pointer-events-auto drop-shadow-blue-700 drop-shadow-2xl pt-4 px-8 mx-5 items-center'>
         <p className="font-medium sm:text-xl text-center">{text}</p>
         <Link href={link} className='bg-white sm:text-xl sm:leading-snug text-center translate-y-4 text-blue-500 py-4 px-8 rounded-xl drop-shadow-white drop-shadow-md flex items-center justify-center gap-x-3 w-fit'>
             {btnText}
