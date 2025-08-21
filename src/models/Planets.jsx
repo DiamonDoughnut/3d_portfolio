@@ -41,6 +41,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
       cancelAnimationFrame(frameRef.current);
       frameRef.current = null;
     }
+    console.log("Stopping motion due to event: " + e)
   }  
   const handlePointerMove = useCallback((e) => {
     if (e.pointerType === "touch"){
