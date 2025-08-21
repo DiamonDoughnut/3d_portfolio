@@ -89,7 +89,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
     canvas.addEventListener('pointercancel', handlePointerUp);
-    canvas.addEventListener('pointerleave', handlePointerUp);
 
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
@@ -98,7 +97,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         canvas.removeEventListener('pointercancel', handlePointerUp)
-        canvas.removeEventListener('pointerleave', handlePointerUp)
     }
 
   }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
