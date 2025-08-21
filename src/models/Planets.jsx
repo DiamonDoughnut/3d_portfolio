@@ -21,12 +21,17 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     e.preventDefault();
     setIsRotating(true);
 
+    if (e.pointerType === 'touch') {
+      e.target.setPointerCapture(e.pointerId);
+    }
+
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     lastX.current = clientX;
   }  
   const handlePointerUp = (e) => {
     e.stopPropagation();
     e.preventDefault();
+    document.body.style.touchAction = 'auto';
     setIsRotating(false);
   }  
   const handlePointerMove = (e) => {
