@@ -62,7 +62,7 @@ const Contact = () => {
   return (
     <section className='relative flex flex-col lg:flex-row max-w-full lg:max-w-[80%] items-center justify-center mt-24 mx-auto'>
       {alert.show && <Alert type={alert.type} text={alert.text} />}
-      <div className='flex-1 min-w-[50%] flex flex-col pl-24 items-center justify-center'>
+      <div className='flex-1 min-w-[50%] flex flex-col md:pl-24 items-center justify-center'>
         <h1 className='text-2xl font-bold text-blue-500'>Get in Touch</h1>
 
         <form className='w-full flex flex-col gap-7 mt-14' onSubmit={handleSubmit}>
