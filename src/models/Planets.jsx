@@ -95,6 +95,7 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         lastX.current = clientX;
         rotationSpeed.current = delta * 0.01 * Math.PI;
     });
+    }
   }, [isRotating, viewport.width]);
     
 
