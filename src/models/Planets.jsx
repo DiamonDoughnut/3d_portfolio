@@ -33,22 +33,31 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     e.preventDefault();
     document.body.style.touchAction = 'auto';
     setIsRotating(false);
+    if (frameRef.current) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
   }  
-  const handlePointerMove = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+  const handlePointerMove = useCallback((e) => {
+    if (e.pointerType === "touch"){
+        e.preventDefault();
+    }
 
-    if (isRotating) {
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const delta = (clientX - lastX.current) / viewport.width;
+    if (!isRotating) return;
     
-    planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+    if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+    }
 
-    lastX.current = clientX;
-
-    rotationSpeed.current = delta * 0.01 * Math.PI;
-    };
-  }  
+    frameRef.current = requestAnimationFrame(() => {
+        const clientX = e.clientX;
+        const delta = (client - lastX.current) / viewport.width;
+        
+        planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+        lastX.current = clientX;
+        rotationSpeed.current = delta * 0.01 * Math.PI;
+    });
+  }, [isRotating, viewport.width]); 
 
   const handleKeyDown = (e) => {
     if (e.key === 'ArrowLeft') {
