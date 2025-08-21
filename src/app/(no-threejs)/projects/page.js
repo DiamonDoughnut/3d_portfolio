@@ -6,7 +6,7 @@ import CTA from "@/components/CTA";
 
 const Projects = () => {
   return (
-    <section className='w-[75%] flex flex-col mx-auto h-full mt-24 px-20 text-slate-200'>
+    <section className='w-[75%] flex flex-col mx-auto h-full mt-24 md:px-20 text-slate-200'>
       <h1 className='text-2xl font-bold'>
         My{" "}
         <span className='text-transparent bg-clip-text bg-gradient-to-r drop-shadow-sm drop-shadow-slate-300 from-blue-500 to-blue-700'>
