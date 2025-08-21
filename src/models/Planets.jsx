@@ -114,6 +114,16 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     }
   }
 
+  const handleTouchCancel = (e) => {
+      console.log('TOUCH CANCEL - force stop');
+      isRotating = false;
+  }
+
+  const handleTouchEnd = (e) => {
+      console.log('TOUCH END - force stop');
+      isRotating = false;
+    }
+
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener('pointerup', handlePointerUp);
@@ -124,6 +134,9 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     document.addEventListener('keyup', handleKeyUp);
     window.addEventListener('pointerup', handleWindowPointerUp);
 
+    canvas.addEventListener('touchend', handleTouchEnd);
+    canvas.addEventListener('touchcancel', handleTouchCancel);
+
     return () => {
         canvas.removeEventListener('pointerup', handlePointerUp)
         canvas.removeEventListener('pointercancel', handlePointerCancel);
@@ -132,6 +145,8 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         window.removeEventListener('pointerup', handleWindowPointerUp);
+        canvas.removeEventListener('touchend', handleTouchEnd);
+        canvas.removeEventListener('touchcancel', handleTouchCancel);
     }
 
   }, [handlePointerDown, handlePointerUp, handlePointerMove, handleKeyDown, handleKeyUp, gl])
