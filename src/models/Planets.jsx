@@ -23,10 +23,6 @@ const Planets = ({isRotating, setIsRotating, setCurrentStage, ...props}) => {
     lastPointerMoveTime.current = Date.now();
     setIsRotating(true);
 
-    if (e.pointerType === 'touch') {
-      e.target.setPointerCapture(e.pointerId);
-    }
-
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     lastX.current = clientX;
   }  
