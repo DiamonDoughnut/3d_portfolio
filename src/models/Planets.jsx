@@ -199,10 +199,10 @@ const smoothingBuffer = useRef([]);
         console.log('TOUCH MOVE event fired');
       
         const clientX = e.touches[0].clientX;
-        const delta = (clientX - lastX.current) / viewport.width;
+        const timingDelta = (clientX - lastX.current) / viewport.width;
       
         if (planetsRef.current) {
-          planetsRef.current.rotation.y += delta * 0.01 * Math.PI;
+          planetsRef.current.rotation.y += timingDelta * 0.01 * Math.PI;
         }
       
         lastX.current = clientX;
